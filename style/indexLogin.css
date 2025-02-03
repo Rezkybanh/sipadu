@@ -1,0 +1,145 @@
+body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    background: url('https://assets.pikiran-rakyat.com/crop/0x0:0x0/1200x675/photo/2024/01/10/2499897497.jpg') no-repeat center center fixed;
+    background-size: cover;
+}
+
+body::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6); /* Transparansi */
+    z-index: 1;
+}
+
+.form-bg {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+}
+
+.form-container {
+    background: linear-gradient(150deg, #2C3E50 33%, #3498DB 34%, #3498DB 66%, #E74C3C 67%);
+    font-family: 'Raleway', sans-serif;
+    text-align: center;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+    width: 300px;
+}
+
+.form-container .title {
+    color: #ECF0F1;
+    font-size: 18px;
+    margin: 0 0 20px;
+}
+
+.form-container .form-horizontal {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 5px;
+}
+
+.form-horizontal .form-icon {
+    background-color: #2C3E50;
+    height: 80px;
+    width: 80px;
+    margin: -40px auto 10px;
+    border-radius: 50%;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.form-horizontal .form-icon img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+.form-horizontal .form-group {
+    margin: 0 0 10px;
+    position: relative;
+}
+
+.form-horizontal .form-group .input-icon {
+    color: #2C3E50;
+    font-size: 20px;
+    position: absolute;
+    left: 10px;
+    top: 10px;
+}
+
+.form-horizontal .form-control {
+    color: #000;
+    font-size: 14px;
+    height: 40px;
+    padding: 10px 40px;
+    margin: 0 0 5px;
+    border: none;
+    border-bottom: 2px solid #3498DB;
+    border-radius: 0;
+}
+
+.form-horizontal .form-control:focus {
+    box-shadow: none;
+    border-bottom-color: #E74C3C;
+}
+
+.form-horizontal .form-control::placeholder {
+    color: #777;
+}
+
+.form-horizontal .forgot {
+    font-size: 12px;
+    text-align: right;
+    display: block;
+}
+
+.form-horizontal .forgot a {
+    color: #3498DB;
+    transition: all 0.3s ease;
+}
+
+.form-horizontal .forgot a:hover {
+    color: #E74C3C;
+    text-decoration: underline;
+}
+
+.form-horizontal .signin {
+    color: #fff;
+    background-color: #E74C3C;
+    font-size: 16px;
+    width: 100%;
+    padding: 12px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    transition: all 0.4s ease;
+}
+
+.form-horizontal .signin:hover {
+    font-weight: 600;
+    letter-spacing: 2px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3) inset;
+}
+
+.password-toggle {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    cursor: pointer;
+    color: #777;
+}
+
+.password-toggle:hover {
+    color: #3498DB;
+}
