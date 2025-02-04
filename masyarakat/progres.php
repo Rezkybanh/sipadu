@@ -8,6 +8,17 @@ checkAccess('Masyarakat');
 // Ambil ID pengaduan dari parameter GET
 $id_pengaduan = isset($_GET['id_pengaduan']) ? $_GET['id_pengaduan'] : null;
 
+// Ambil nama user berdasarkan id_user
+$queryUser = "SELECT username FROM user WHERE id = :id_user";
+$stmtUser = $pdo->prepare($queryUser);
+$stmtUser->bindParam(':id_user', $id_user, PDO::PARAM_INT);
+$stmtUser->execute();
+$user = $stmtUser->fetch(PDO::FETCH_ASSOC);
+
+// Pastikan nama user tersedia
+$nama_user = $user ? $user['username'] : 'Tidak diketahui';
+
+
 if (!isset($_GET['id_pengaduan']) || empty($_GET['id_pengaduan'])) {
     echo "<script>
     Swal.fire({
@@ -199,10 +210,9 @@ $status = $pengaduan['status'];
     <div class="card mb-4">
         <div class="card-body">
             <h5 class="card-title">Informasi Pengaduan</h5>
-            <p><strong>Nama:</strong> <?= htmlspecialchars($id_user); ?></p>
+            <p><strong>Nama:</strong> <?= htmlspecialchars($nama_user); ?></p>
             <p><strong>Judul Pengaduan:</strong> <?= htmlspecialchars($pengaduan['judul']); ?></p>
             <p><strong>Deskripsi:</strong> <?= htmlspecialchars($pengaduan['deskripsi']); ?></p>
-            <p><strong>Status:</strong> <?= htmlspecialchars($status); ?></p>
             <strong>Bukti:</strong>
             <div class="pdf-container">
                 <?php if ($pengaduan['bukti']) : ?>

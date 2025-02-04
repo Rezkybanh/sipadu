@@ -10,45 +10,17 @@ checkAccess('Masyarakat');
 $formDisabled = false; // Default form aktif
 
 try {
-    // Cek apakah sudah ada pengaduan dari pengguna
-    $query = "SELECT COUNT(*) AS jumlah_pengaduan FROM pengaduan WHERE id = :id_user";
+    // Ambil status dari pengaduan terakhir pengguna
+    $query = "SELECT id_pengaduan, status FROM pengaduan WHERE id = :id_user ORDER BY id_pengaduan DESC LIMIT 1";
     $stmt = $pdo->prepare($query);
     $stmt->bindParam(':id_user', $id_user, PDO::PARAM_INT);
     $stmt->execute();
-    $result = $stmt->fetch(PDO::FETCH_ASSOC);
+    $pengaduan = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    if ($result['jumlah_pengaduan'] > 0) {
+    // Jika ada pengaduan dan statusnya bukan 'Selesai', form dinonaktifkan
+    if ($pengaduan && $pengaduan['status'] !== 'Selesai') {
         $formDisabled = true;
-
-        // Tambahkan kode ini untuk mendapatkan id_pengaduan terakhir pengguna
-        try {
-            $query = "SELECT id_pengaduan FROM pengaduan WHERE id = :id_user ORDER BY id_pengaduan DESC LIMIT 1";
-            $stmt = $pdo->prepare($query);
-            $stmt->bindParam(':id_user', $id_user, PDO::PARAM_INT);
-            $stmt->execute();
-            $pengaduan = $stmt->fetch(PDO::FETCH_ASSOC);
-            $id_pengaduan = $pengaduan ? $pengaduan['id_pengaduan'] : null;
-        } catch (PDOException $e) {
-            echo "<script>Swal.fire('Error', 'Terjadi kesalahan: " . $e->getMessage() . "', 'error');</script>";
-            exit;
-        }
-    }
-} catch (PDOException $e) {
-    echo "<script>Swal.fire('Error', 'Terjadi kesalahan: " . $e->getMessage() . "', 'error');</script>";
-    exit;
-}
-
-
-try {
-    // Cek apakah sudah ada pengaduan dari pengguna
-    $query = "SELECT COUNT(*) AS jumlah_pengaduan FROM pengaduan WHERE id = :id_user";
-    $stmt = $pdo->prepare($query);
-    $stmt->bindParam(':id_user', $id_user, PDO::PARAM_INT);
-    $stmt->execute();
-    $result = $stmt->fetch(PDO::FETCH_ASSOC);
-
-    if ($result['jumlah_pengaduan'] > 0) {
-        $formDisabled = true;
+        $id_pengaduan = $pengaduan['id_pengaduan']; // Simpan ID pengaduan terakhir untuk redirect
     }
 } catch (PDOException $e) {
     echo "<script>Swal.fire('Error', 'Terjadi kesalahan: " . $e->getMessage() . "', 'error');</script>";

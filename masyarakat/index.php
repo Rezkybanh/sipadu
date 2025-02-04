@@ -85,7 +85,7 @@ if (isset($_POST['logout'])) {
                     <?php foreach ($daftar_pengaduan as $pengaduan): ?>
                         <a href="index.php?page=progres&id_pengaduan=<?= $pengaduan['id_pengaduan'] ?>" class="nav_link <?= $page == 'progres' && $_GET['id_pengaduan'] == $pengaduan['id_pengaduan'] ? 'active' : '' ?>">
                             <i class='bx bx-bar-chart-alt-2 nav_icon'></i>
-                            <span class="nav_name">Progres</span>
+                            <span class="nav_name"><?= $pengaduan['judul'] ?? 'Judul Tidak Tersedia' ?></span> <!-- Mengatasi undefined array key -->
                         </a>
                     <?php endforeach; ?>
                     <a href="index.php?page=Berita" class="nav_link <?= $page == 'Berita' ? 'active' : '' ?>">
@@ -143,9 +143,9 @@ if (isset($_POST['logout'])) {
                 include 'progres.php';
             } elseif ($page == 'panduan') {
                 include 'panduan.php';
-            }elseif ($page == 'Berita') {
+            } elseif ($page == 'Berita') {
                 include 'berita.php';
-            }elseif ($page == 'detailBerita') {
+            } elseif ($page == 'detailBerita') {
                 include 'detailBerita.php';
             } else {
                 echo "<div class='alert alert-danger'>Halaman tidak ditemukan!</div>";
