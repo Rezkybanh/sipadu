@@ -72,10 +72,21 @@ try {
 <div class="container-fluid">
     <!-- Search -->
     <div class="row align-items-center mb-3">
-        <div class="col-md-6 search-bar">
-            <input type="text" id="searchInput" class="form-control" placeholder="Cari berdasarkan judul...">
-        </div>
+    <div class="col-md-6 search-bar">
+        <input type="text" id="searchInput" class="form-control" placeholder="Cari berdasarkan judul...">
     </div>
+</div>
+    <div class="col-md-3">
+        <select id="statusFilter" class="form-control"> 
+            <option value="all">Semua Status Pengaduan</option>
+            <option value="Baru">Baru</option>
+            <option value="Diproses">Diproses</option>
+            <option value="Selesai">Selesai</option>
+            <option value="Ditolak">Ditolak</option>
+            <option value="Revisi">Revisi</option>
+        </select>
+    </div>
+
 
     <!-- Table -->
     <div class="table-responsive">
@@ -85,19 +96,7 @@ try {
                 <th>No</th>
                 <th>Judul Pengaduan</th>
                 <th>Tanggal Pengaduan</th>
-                <th>
-                    <div class="dropdown-status">
-                        <span class="status-filter">Status <i class="bi bi-caret-down-fill"></i></span>
-                        <ul class="dropdown-menu">
-                            <li><button class="dropdown-item" data-status="all">Semua Status</button></li>
-                            <li><button class="dropdown-item" data-status="Baru">Baru</button></li>
-                            <li><button class="dropdown-item" data-status="Diproses">Diproses</button></li>
-                            <li><button class="dropdown-item" data-status="Selesai">Selesai</button></li>
-                            <li><button class="dropdown-item" data-status="Ditolak">Ditolak</button></li>
-                            <li><button class="dropdown-item" data-status="Revisi">Revisi</button></li>
-                        </ul>
-                    </div>
-                </th>
+                <th>Status</th>
                 <th>Aksi</th>
             </tr>
         </thead>
@@ -108,21 +107,7 @@ try {
                         <td><?= $index + 1; ?></td>
                         <td><?= htmlspecialchars($row['judul']); ?></td>
                         <td><?= htmlspecialchars($row['tanggal_pengaduan']); ?></td>
-                        <td>
-                            <?php
-                            $badgeClass = match ($row['status']) {
-                                'Baru' => 'bg-warning',
-                                'Diproses' => 'bg-info',
-                                'Selesai' => 'bg-success',
-                                'Ditolak' => 'bg-danger',
-                                'Revisi' => 'bg-secondary',
-                                default => 'bg-light',
-                            };
-                            ?>
-                            <span class="badge <?= $badgeClass; ?>">
-                                <?= htmlspecialchars($row['status']); ?>
-                            </span>
-                        </td>
+                        <td><?= htmlspecialchars($row['status']); ?></td>
                         <td>
                             <a href="index.php?page=detailTugas&id_pengaduan=<?= $row['id_pengaduan']; ?>" 
                                class="btn btn-sm btn-primary">Lihat Detail</a>
@@ -151,15 +136,11 @@ try {
     });
 
     // Filter Status
-    document.querySelectorAll('.dropdown-item').forEach(button => {
-        button.addEventListener('click', function () {
-            const selectedStatus = this.getAttribute('data-status');
-            const rows = document.querySelectorAll('#pengaduanTable tr');
-            rows.forEach(row => {
-                const status = row.cells[3].textContent.toLowerCase();
-                row.style.display =
-                    selectedStatus === 'all' || status === selectedStatus ? '' : 'none';
-            });
+    document.getElementById('statusFilter').addEventListener('change', function() {
+        const selectedStatus = this.value.toLowerCase();
+        document.querySelectorAll('#pengaduanTable tr').forEach(row => {
+            const status = row.cells[3].textContent.trim().toLowerCase();
+            row.style.display = selectedStatus === 'all' || status === selectedStatus ? '' : 'none';
         });
     });
 </script>
