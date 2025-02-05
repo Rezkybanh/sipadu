@@ -91,7 +91,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['id'])) {
             showConfirmButton: false,
             timer: 2000
         }).then(() => {
-            <?php if ($status === "success") echo "window.location.href='index.php?page=uploadBerita&id=" . $berita['id'] . "';"; ?>
+            <?php if ($status === "success") echo "window.location.href='index.php?page=kelolaBerita&id=" . $berita['id'] . "';"; ?>
         });
     </script>
 <?php endif; ?>
