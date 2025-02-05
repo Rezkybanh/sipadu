@@ -40,6 +40,7 @@ if (isset($_POST['logout'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS9U3kAT8-QOWyzlekr4HzYrxU9OVFlxU89rA&s" type="image/x-icon">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/boxicons@latest/css/boxicons.min.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -141,9 +142,9 @@ if (isset($_POST['logout'])) {
             } elseif ($page == 'dashboard') {
                 include 'dashboard.php';
             } elseif ($page == 'unduhLapProses') {
-                include 'unduhLapProses.php'; 
+                include 'unduhLapProses.php';
             } elseif ($page == 'tambahUser') {
-                    include 'tambahUser.php';
+                include 'tambahUser.php';
             } elseif ($page == 'detailPengaduan') {
                 include 'detailPengaduan.php';
             } elseif ($page == 'uploadBerita') {

@@ -78,6 +78,7 @@ if (isset($_POST['hapus_selesai'])) {
         <div class="col-md-6 search-bar">
             <input type="text" id="searchInput" class="form-control" placeholder="Cari berdasarkan judul...">
         </div>
+       
     </div>
 
     <!-- Pesan Notifikasi -->
@@ -92,16 +93,28 @@ if (isset($_POST['hapus_selesai'])) {
             });
         </script>
     <?php endif; ?>
-
-    <!-- Form Hapus Pengaduan Selesai -->
-    <form method="post" id="hapusForm" class="d-flex justify-content-between mb-3">
-        <input type="hidden" name="hapus_selesai">
-        <button type="button" id="btnHapus" class="btn btn-danger">
-            <i class="bi bi-trash"></i> Hapus Pengaduan Selesai
-        </button>
-    </form>
-
-    <!-- Table -->
+    <div class="row">
+        <div class="col-md-3">
+            <form method="post" id="hapusForm">
+                <input type="hidden" name="hapus_selesai">
+                <button type="button" id="btnHapus" class="btn btn-danger w-100">
+                    <i class="bi bi-trash"></i> Hapus Pengaduan Selesai
+                </button>
+            </form>
+        </div>
+        <div class="col-md-3">
+            <select id="statusFilter" class="form-select">
+                <option value="all">Semua Status</option>
+                <option value="Baru">Baru</option>
+                <option value="Diproses">Diproses</option>
+                <option value="Selesai">Selesai</option>
+                <option value="Ditolak">Ditolak</option>
+                <option value="Revisi">Revisi</option>
+            </select>
+        </div>
+        </div>
+    </div>
+    
     <div class="table-responsive">
         <table class="table table-striped table-hover">
             <thead>
@@ -109,19 +122,7 @@ if (isset($_POST['hapus_selesai'])) {
                     <th>No</th>
                     <th>Judul Pengaduan</th>
                     <th>Tanggal Pengaduan</th>
-                    <th>
-                        <div class="dropdown-status">
-                            <span class="status-filter">Status <i class="bi bi-caret-down-fill"></i></span>
-                            <ul class="dropdown-menu">
-                                <li><button class="dropdown-item" data-status="all">Semua Status</button></li>
-                                <li><button class="dropdown-item" data-status="Baru">Baru</button></li>
-                                <li><button class="dropdown-item" data-status="Diproses">Diproses</button></li>
-                                <li><button class="dropdown-item" data-status="Selesai">Selesai</button></li>
-                                <li><button class="dropdown-item" data-status="Ditolak">Ditolak</button></li>
-                                <li><button class="dropdown-item" data-status="Revisi">Revisi</button></li>
-                            </ul>
-                        </div>
-                    </th>
+                    <th>Status</th>
                     <th>Aksi</th>
                 </tr>
             </thead>
@@ -132,24 +133,9 @@ if (isset($_POST['hapus_selesai'])) {
                             <td><?= $index + 1; ?></td>
                             <td><?= htmlspecialchars($row['judul']); ?></td>
                             <td><?= htmlspecialchars($row['tanggal_pengaduan']); ?></td>
+                            <td><?= htmlspecialchars($row['status']); ?></td>
                             <td>
-                                <?php
-                                $badgeClass = match ($row['status']) {
-                                    'Baru' => 'bg-warning',
-                                    'Diproses' => 'bg-info',
-                                    'Selesai' => 'bg-success',
-                                    'Ditolak' => 'bg-danger',
-                                    'Revisi' => 'bg-secondary',
-                                    default => 'bg-light',
-                                };
-                                ?>
-                                <span class="badge <?= $badgeClass; ?>">
-                                    <?= htmlspecialchars($row['status']); ?>
-                                </span>
-                            </td>
-                            <td>
-                                <a href="index.php?page=detailPengaduan&id_pengaduan=<?= $row['id_pengaduan']; ?>"
-                                    class="btn btn-sm btn-primary">Lihat Detail</a>
+                                <a href="index.php?page=detailPengaduan&id_pengaduan=<?= $row['id_pengaduan']; ?>" class="btn btn-sm btn-primary">Lihat Detail</a>
                             </td>
                         </tr>
                     <?php endforeach; ?>
@@ -167,23 +153,17 @@ if (isset($_POST['hapus_selesai'])) {
     // Search Functionality
     document.getElementById('searchInput').addEventListener('keyup', function() {
         const searchTerm = this.value.toLowerCase();
-        const rows = document.querySelectorAll('#pengaduanTable tr');
-        rows.forEach(row => {
+        document.querySelectorAll('#pengaduanTable tr').forEach(row => {
             const title = row.cells[1].textContent.toLowerCase();
             row.style.display = title.includes(searchTerm) ? '' : 'none';
         });
     });
 
-    // Filter Status
-    document.querySelectorAll('.dropdown-item').forEach(button => {
-        button.addEventListener('click', function() {
-            const selectedStatus = this.getAttribute('data-status');
-            const rows = document.querySelectorAll('#pengaduanTable tr');
-            rows.forEach(row => {
-                const status = row.cells[3].textContent.toLowerCase();
-                row.style.display =
-                    selectedStatus === 'all' || status === selectedStatus ? '' : 'none';
-            });
+    document.getElementById('statusFilter').addEventListener('change', function() {
+        const selectedStatus = this.value.toLowerCase();
+        document.querySelectorAll('#pengaduanTable tr').forEach(row => {
+            const status = row.cells[3].textContent.trim().toLowerCase();
+            row.style.display = selectedStatus === 'all' || status === selectedStatus ? '' : 'none';
         });
     });
     document.getElementById('btnHapus').addEventListener('click', function() {
@@ -204,6 +184,3 @@ if (isset($_POST['hapus_selesai'])) {
     });
 </script>
 
-
-<!-- Bootstrap Icon -->
-<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
