@@ -71,7 +71,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             <h3 class="title">Sign Up SIPADU</h3>
             <form class="form-horizontal" id="signup-form">
                 <div class="form-icon">
-                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS9U3kAT8-QOWyzlekr4HzYrxU9OVFlxU89rA&s" alt="User Icon">
+                    <img src="assets/NewLogoBapenda.png" alt="User Icon">
                 </div>
                 <div class="form-group">
                     <span class="input-icon"><i class="fa fa-user"></i></span>
