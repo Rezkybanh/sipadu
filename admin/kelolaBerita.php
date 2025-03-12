@@ -6,7 +6,7 @@ if (isset($_POST['hapus'])) {
     $id = $_POST['id'];
     
     // Ambil nama file gambar dari database
-    $stmt = $pdo->prepare("SELECT gambar FROM berita WHERE id = ?");
+    $stmt = $pdo->prepare("SELECT gambar FROM berita WHERE id_berita = ?");
     $stmt->execute([$id]);
     $berita = $stmt->fetch(PDO::FETCH_ASSOC);
     
@@ -18,7 +18,7 @@ if (isset($_POST['hapus'])) {
     }
     
     // Hapus berita dari database
-    $stmt = $pdo->prepare("DELETE FROM berita WHERE id = ?");
+    $stmt = $pdo->prepare("DELETE FROM berita WHERE id_berita = ?");
     if ($stmt->execute([$id])) {
         echo "<script>
             Swal.fire({
@@ -76,8 +76,8 @@ $beritaList = $stmt->fetchAll(PDO::FETCH_ASSOC);
                         <p class="mb-1 text-muted"><?php echo date('l, d F Y', strtotime($berita['tanggalUpload'])); ?></p>
                     </div>
                     <div class="d-flex gap-2">
-                        <a href="index.php?page=detailKelolaBerita&id=<?php echo $berita['id']; ?>" class="btn btn-primary btn-sm"><i class="fas fa-edit"></i></a>
-                        <button type="button" class="btn btn-danger btn-sm" onclick="confirmDelete(<?php echo $berita['id']; ?>)"><i class="fas fa-trash-alt"></i></button>
+                        <a href="index.php?page=detailKelolaBerita&id=<?php echo $berita['id_berita']; ?>" class="btn btn-primary btn-sm"><i class="fas fa-edit"></i></a>
+                        <button type="button" class="btn btn-danger btn-sm" onclick="confirmDelete(<?php echo $berita['id_berita']; ?>)"><i class="fas fa-trash-alt"></i></button>
                     </div>
                 </div>
             <?php endforeach; ?>

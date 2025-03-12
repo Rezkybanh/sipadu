@@ -3,12 +3,7 @@ require '../koneksi.php'; // Koneksi ke database
 
 $pesan = "";
 $status = "";
-$berita = [
-    'id' => '',
-    'judul' => '',
-    'artikel' => '',
-    'gambar' => ''
-];
+
 
 // Ambil ID dari URL
 if (isset($_GET['id'])) {
@@ -16,8 +11,8 @@ if (isset($_GET['id'])) {
 
     // Ambil data berita berdasarkan ID
     try {
-        $stmt = $pdo->prepare("SELECT * FROM berita WHERE id = :id");
-        $stmt->execute([':id' => $id]);
+        $stmt = $pdo->prepare("SELECT * FROM berita WHERE id_berita = :id_berita");
+        $stmt->execute([':id_berita' => $id]);
         $berita = $stmt->fetch(PDO::FETCH_ASSOC);
 
         if (!$berita) {
@@ -66,9 +61,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['id'])) {
     // Update data ke database
     if ($pesan == "") {
         try {
-            $stmt = $pdo->prepare("UPDATE berita SET judul = :judul, artikel = :artikel, gambar = :gambar WHERE id = :id");
+            $stmt = $pdo->prepare("UPDATE berita SET judul = :judul, artikel = :artikel, gambar = :gambar WHERE id_berita = :id_berita");
             $stmt->execute([
-                ':id' => $id,
+                ':id_berita' => $id,
                 ':judul' => $judul,
                 ':artikel' => $artikel,
                 ':gambar' => $gambarNama
@@ -91,7 +86,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['id'])) {
             showConfirmButton: false,
             timer: 2000
         }).then(() => {
-            <?php if ($status === "success") echo "window.location.href='index.php?page=kelolaBerita&id=" . $berita['id'] . "';"; ?>
+            <?php if ($status === "success") echo "window.location.href='index.php?page=kelolaBerita&id=" . $berita['id_berita'] . "';"; ?>
         });
     </script>
 <?php endif; ?>
@@ -99,7 +94,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['id'])) {
 <div class="container form-container mt-5">
     <div class="form-title text-center fw-bold fs-4 mb-3">Edit Berita</div>
     <form action="" method="POST" enctype="multipart/form-data">
-        <input type="hidden" name="id" value="<?= htmlspecialchars($berita['id']); ?>">
+        <input type="hidden" name="id" value="<?= htmlspecialchars($berita['id_berita']); ?>">
 
         <div class="mb-3">
             <label for="judulBerita" class="form-label">Judul Berita</label>

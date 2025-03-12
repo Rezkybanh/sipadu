@@ -2,15 +2,15 @@
 include '../koneksi.php';
 
 // Pastikan ID berita tersedia di URL
-if (!isset($_GET['id']) || empty($_GET['id'])) {
+if (!isset($_GET['id_berita']) || empty($_GET['id_berita'])) {
     echo "<div class='alert alert-danger'>ID berita tidak ditemukan!</div>";
     exit;
 }
 
-$id = $_GET['id'];
+$id = $_GET['id_berita'];
 
 // Ambil data berita dari database
-$stmt = $pdo->prepare("SELECT * FROM berita WHERE id = ?");
+$stmt = $pdo->prepare("SELECT * FROM berita WHERE id_berita = ?");
 $stmt->execute([$id]);
 $berita = $stmt->fetch(PDO::FETCH_ASSOC);
 
