@@ -42,38 +42,14 @@
                 <p>Setelah pengaduan dikirim, Anda akan menerima konfirmasi terkait status pengaduan anda di bagian progres.</p>
             </div>
         </div>
-    </div>
-
+        
     <div class="text-center mt-4">
         <a href="index.php?page=pengaduan" class="btn btn-primary btn-lg responsive-btn">Ajukan Pengaduan</a>
         <a href="../pdf/FORMAT LAMPIRAN PENDUKUNG LAYANAN PENGADUAN WAJIB PAJAK.pdf" class="btn btn-secondary btn-lg ms-3 responsive-btn" download>Download Template Laporan</a>
     </div>
+    </div>
 
-    <style>
-        /* Default style untuk tombol */
-        .responsive-btn {
-            font-size: 1rem;
-            /* Ukuran font default */
-            padding: 10px 20px;
-            /* Padding default */
-        }
 
-        /* Responsif untuk layar kecil */
-        @media (max-width: 767px) {
-            .responsive-btn {
-                font-size: 0.85rem;
-                /* Mengurangi ukuran font */
-                padding: 8px 15px;
-                margin-bottom: 10px;
-                /* Memberikan jarak antar tombol */
-            }
-
-            .responsive-btn+.responsive-btn {
-                margin-left: 0;
-                /* Hilangkan margin kiri tombol kedua */
-            }
-        }
-    </style>
 
 
 </div>
@@ -152,4 +128,28 @@
             /* Mengurangi ukuran font tombol pada layar kecil */
         }
     }
+
+     /* Default style untuk tombol */
+     .responsive-btn {
+            font-size: 1rem;
+            /* Ukuran font default */
+            padding: 10px 20px;
+            /* Padding default */
+        }
+
+        /* Responsif untuk layar kecil */
+        @media (max-width: 767px) {
+            .responsive-btn {
+                font-size: 0.85rem;
+                /* Mengurangi ukuran font */
+                padding: 8px 15px;
+                margin-bottom: 10px;
+                /* Memberikan jarak antar tombol */
+            }
+
+            .responsive-btn+.responsive-btn {
+                margin-left: 0;
+                /* Hilangkan margin kiri tombol kedua */
+            }
+        }
 </style>

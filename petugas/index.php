@@ -37,6 +37,7 @@ if (isset($_POST['logout'])) {
         object-fit: cover;
         /* Agar gambar tidak terdistorsi */
     }
+
 </style>
 <!DOCTYPE html>
 <html lang="id">
@@ -137,6 +138,7 @@ if (isset($_POST['logout'])) {
         </div>
     </main>
 
+     
     <!-- Include JS Files -->
     <script src="../js/index.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js"></script>

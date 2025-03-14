@@ -5,7 +5,7 @@ require '../koneksi.php';
 use Dompdf\Dompdf;
 use Dompdf\Options;
 
-// Ambil data pengaduan yang berstatus "Diproses" dengan username pelapor dan petugas
+// Ambil data pengaduan yang berstatus "Selesai" dengan username pelapor dan petugas
 $query = "SELECT 
             p.id_pengaduan, 
             p.judul, 
@@ -67,7 +67,7 @@ $dompdf->render();
 
 // Unduh file PDF
 ob_clean();
-$dompdf->stream("Laporan_Pengaduan_Diproses.pdf", array("Attachment" => true));
+$dompdf->stream("Laporan_Pengaduan_Selesai.pdf", array("Attachment" => true));
 
 exit();
 ?>

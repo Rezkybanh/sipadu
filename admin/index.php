@@ -31,6 +31,7 @@ if (isset($_POST['logout'])) {
         object-fit: cover;
         /* Agar gambar tidak terdistorsi */
     }
+
 </style>
 <!DOCTYPE html>
 <html lang="id">

@@ -40,6 +40,7 @@ if (isset($_POST['logout'])) {
         object-fit: cover;
         /* Agar gambar tidak terdistorsi */
     }
+
 </style>
 <!DOCTYPE html>
 <html lang="id">
@@ -91,6 +92,10 @@ if (isset($_POST['logout'])) {
                     <a href="index.php?page=Berita" class="nav_link <?= $page == 'Berita' ? 'active' : '' ?>">
                         <i class='bx bx-news nav_icon'></i>
                         <span class="nav_name">Berita</span>
+                    </a>
+                    <a href="https://wa.me/088809632140" class="nav_link">
+                        <i class='fab fa-whatsapp nav_icon'></i>
+                        <span class="nav_name">Hubungi CS</span>
                     </a>
                     <a href="#" class="nav_link" id="logoutLink">
                         <i class='bx bx-log-out nav_icon'></i>
@@ -153,6 +158,7 @@ if (isset($_POST['logout'])) {
             ?>
         </div>
     </main>
+
 
     <!-- Include JS Files -->
     <script src="../js/index.js"></script>

@@ -121,7 +121,6 @@ $id_pengaduan = $_GET['id_pengaduan'];
 // Debug untuk memastikan nilai ID pengaduan diterima
 if (!$id_pengaduan) {
     echo "<p class='text-danger'>ID pengaduan tidak ditemukan di URL.</p>";
-    var_dump($_GET); // Debugging
     exit;
 }
 
@@ -225,7 +224,7 @@ $status = $pengaduan['status'];
     </div>
 
     <!-- Progress Bar dan Status Laporan -->
-    <div class="card mb-4">
+    <div class="card mb-2 ">
         <div class="card-body">
             <h5 class="card-title">Status Laporan</h5>
             <div class="progress mb-3">
@@ -236,20 +235,13 @@ $status = $pengaduan['status'];
                     <?= htmlspecialchars($status); ?>
                 </div>
             </div>
-
-
             <?php if ($status === 'Revisi'): ?>
                 <p><strong>Keterangan Revisi:</strong> <?= htmlspecialchars($pengaduan['keteranganRevisi']); ?></p>
             <?php endif; ?>
         </div>
     </div>
 
-    <!-- Button dan Form Sesuai Status -->
-    <?php if ($status === 'Baru'): ?>
-        <p class="text-info">Laporan Anda baru saja masuk.</p>
-    <?php elseif ($status === 'Diproses'): ?>
-        <p class="text-warning">Laporan Anda sedang diproses.</p>
-    <?php elseif ($status === 'Selesai'): ?>
+    <?php if ($status === 'Selesai'): ?>
         <p class="text-success">Pengaduan Anda telah selesai diproses! Berikut bukti bahwa pengaduan Anda selesai.</p>
         <div class="pdf-container mb-2">
             <?php if ($pengaduan['laporan_petugas']) : ?>
@@ -265,7 +257,7 @@ $status = $pengaduan['status'];
                         <label for="keteranganRevisi">Keterangan Revisi</label>
                         <textarea name="keteranganRevisi" id="keteranganRevisi" class="form-control" rows="4" required></textarea>
                     </div>
-                    <button type="submit" name="submit_revisi" class="btn btn-primary mt-3">Kirim Revisi</button>
+                    <button type="submit" name="submit_revisi" class="btn btn-primary mt-3 mb-2">Kirim Revisi</button>
                 </form>
             </div>
         </div>
@@ -275,11 +267,4 @@ $status = $pengaduan['status'];
             <button type="submit" name="delete_pengaduan" class="btn btn-danger">Ajukan Kembali Pengaduan</button>
         </form>
     <?php endif; ?>
-
-    <!-- Hubungi CS -->
-    <div class="text-center mb-3">
-        <a href="https://wa.me/088809632140" class="btn btn-success btn-lg" target="_blank">
-            <i class="fab fa-whatsapp"></i> Hubungi CS
-        </a>
-    </div>
 </div>

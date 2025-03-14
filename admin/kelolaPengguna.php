@@ -1,29 +1,32 @@
-<?php
-// Pastikan ob_start() ada di awal file, sebelum ada output apapun
+<?php   
 ob_start();
-
-include '../koneksi.php'; // Koneksi ke database
+include '../koneksi.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $action = $_POST['action'] ?? null;
     $id = $_POST['id'] ?? null;
+    $field = $_POST['field'] ?? null;
+    $value = $_POST['value'] ?? null;
 
-    if ($action === 'update' && $id) {
-        $field = $_POST['field'];
-        $value = $_POST['value'];
-
+    if ($id && $field && $value !== null) {
         if ($field === 'password') {
-            $value = password_hash($value, PASSWORD_DEFAULT); // Hash password
+            $value = password_hash($value, PASSWORD_DEFAULT);
         }
 
         $stmt = $pdo->prepare("UPDATE user SET $field = :value WHERE id = :id");
         $stmt->bindParam(':value', $value);
         $stmt->bindParam(':id', $id);
 
-        echo $stmt->execute() ? "success" : "error";
-        exit;
+        if ($stmt->execute()) {
+            echo "<script>window.location.href='index.php?page=kelolaPengguna';</script>";
+            exit;
+        } else {
+            echo "Gagal memperbarui data.";
+        }
     }
 }
+
+$stmt = $pdo->query("SELECT * FROM user ORDER BY id ASC");
+$users = $stmt->fetchAll(PDO::FETCH_ASSOC);
 $loggedInUserId = $_SESSION['user_id'] ?? null;
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'delete') {
@@ -43,7 +46,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
                   </script>";
         } else {
             // Cek apakah pengguna memiliki pengaduan yang terkait
-            $checkStmt = $pdo->prepare("SELECT COUNT(*) FROM pengaduan WHERE id = :id"); // Ganti id_user dengan user_id
+            $checkStmt = $pdo->prepare("SELECT COUNT(*) FROM pengaduan WHERE id = :id"); 
             $checkStmt->bindParam(':id', $id);
             $checkStmt->execute();
             $count = $checkStmt->fetchColumn();
@@ -96,9 +99,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
     </div>
 
     <div class="table-responsive">
-        <table class="table table-bordered">
-            <thead class="thead-light">
-                <tr style="background-color:cornflowerblue;">
+        <table class="table table-bordered table-striped" id="userTable">
+            <thead class="table-primary">
+                <tr>
                     <th>No</th>
                     <th>Username</th>
                     <th>Password</th>
@@ -106,38 +109,40 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
                     <th>Aksi</th>
                 </tr>
             </thead>
-            <tbody id="userTable">
-                <?php
-                // Mengambil data pengguna dari database
-                $stmt = $pdo->query("SELECT * FROM user ORDER BY id ASC");
-                $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
-                $no = 1;
-                foreach ($users as $user): ?>
+            <tbody>
+                <?php $no = 1; foreach ($users as $user): ?>
                     <tr>
                         <td><?= $no++; ?></td>
-                        <td class="editable" data-field="username" data-id="<?= $user['id']; ?>">
-                            <?= htmlspecialchars($user['username']); ?>
-                        </td>
-                        <td class="editable" data-field="password" data-id="<?= $user['id']; ?>">
-                            ********************
-                        </td>
-                        <td class="editable-dropdown" data-field="role" data-id="<?= $user['id']; ?>">
-                            <span>
-                                <?= htmlspecialchars($user['role']); ?>
-                                <i class="fa fa-angle-down ms-2"></i>
-                            </span>
-                            <select class="form-control d-none">
-                                <option value="Admin" <?= $user['role'] === 'Admin' ? 'selected' : ''; ?>>Admin<i class="fa fa-angle-down ms-2"></i></option>
-                                <option value="Petugas" <?= $user['role'] === 'Petugas' ? 'selected' : ''; ?>>Petugas<i class="fa fa-angle-down ms-2"></i></option>
-                                <option value="Masyarakat" <?= $user['role'] === 'Masyarakat' ? 'selected' : ''; ?>>Masyarakat</option>
-                            </select>
+                        <td>
+                            <form method="POST">
+                                <input class="form-control" type="hidden" name="id" value="<?= $user['id']; ?>">
+                                <input class="form-control" type="hidden" name="field" value="username">
+                                <input class="form-control" type="text" name="value" value="<?= htmlspecialchars($user['username']); ?>" onblur="this.form.submit();">
+                            </form>
                         </td>
                         <td>
-                            <!-- Tombol Hapus -->
-                            <form method="POST" action="" class="delete-form">
+                            <form method="POST">
+                                <input class=form-control type="hidden" name="id" value="<?= $user['id']; ?>">
+                                <input class=form-control type="hidden" name="field" value="password">
+                                <input class=form-control type="password" name="value" placeholder="************" onblur="this.form.submit();">
+                            </form>
+                        </td>
+                        <td>
+                            <form method="POST">
                                 <input type="hidden" name="id" value="<?= $user['id']; ?>">
-                                <input type="hidden" name="action" value="delete"> <!-- Tambahkan aksi hapus -->
-                                <button type="button" class="btn btn-danger btn-sm delete-button">Hapus</button>
+                                <input type="hidden" name="field" value="role">
+                                <select class="form-select" name="value" onchange="this.form.submit();">
+                                    <option value="Admin" <?= $user['role'] === 'Admin' ? 'selected' : ''; ?>>Admin</option>
+                                    <option value="Petugas" <?= $user['role'] === 'Petugas' ? 'selected' : ''; ?>>Petugas</option>
+                                    <option value="Masyarakat" <?= $user['role'] === 'Masyarakat' ? 'selected' : ''; ?>>Masyarakat</option>
+                                </select>
+                            </form>
+                        </td>
+                        <td>
+                            <form method="POST" action="">
+                                <input type="hidden" name="id" value="<?= $user['id']; ?>">
+                                <input type="hidden" name="action" value="delete">
+                                <button type="submit" class="btn btn-danger btn-sm">Hapus</button>
                             </form>
                         </td>
                     </tr>
@@ -152,6 +157,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
     .editable-dropdown:hover {
         cursor: pointer;
         background-color: #f8f9fa;
+    }
+    .table-primary {
+        background-color: #add8e6 !important;
     }
 
     .editable input,
@@ -193,86 +201,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
 </script>
 
 <script>
-    // Editable text fields
-    const userTable = document.getElementById('userTable');
-    userTable.addEventListener('click', (e) => {
-        if (e.target.classList.contains('editable')) {
-            const field = e.target;
-            const input = document.createElement('input');
-            input.type = 'text';
-            input.value = field.textContent.trim();
-            input.addEventListener('blur', () => {
-                const newValue = input.value;
-                const userId = field.getAttribute('data-id');
-                const fieldName = field.getAttribute('data-field');
+   searchInput.addEventListener('input', function() {
+    const searchValue = searchInput.value.toLowerCase();
+    const rows = userTable.getElementsByTagName('tr');
 
-                fetch('', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/x-www-form-urlencoded'
-                        },
-                        body: new URLSearchParams({
-                            action: 'update',
-                            id: userId,
-                            field: fieldName,
-                            value: newValue
-                        })
-                    }).then(response => response.text())
-                    .then(response => {
-                        if (response === "success") {
-                            field.textContent = (fieldName === 'password') ? '********' : newValue;
-                        }
-                    });
+    for (let row of rows) {
+        let textContent = row.textContent.toLowerCase();
 
-                field.classList.remove('d-none');
-            });
-            field.textContent = '';
-            field.appendChild(input);
-            input.focus();
-        } else if (e.target.classList.contains('editable-dropdown')) {
-            const field = e.target;
-            const span = field.querySelector('span');
-            const select = field.querySelector('select');
-            span.classList.add('d-none');
-            select.classList.remove('d-none');
-            select.value = span.textContent.trim();
-            select.addEventListener('change', () => {
-                const newValue = select.value;
-                const userId = field.getAttribute('data-id');
-                const fieldName = field.getAttribute('data-field');
-
-                fetch('', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/x-www-form-urlencoded'
-                        },
-                        body: new URLSearchParams({
-                            action: 'update',
-                            id: userId,
-                            field: fieldName,
-                            value: newValue
-                        })
-                    }).then(response => response.text())
-                    .then(response => {
-                        if (response === "success") {
-                            span.textContent = newValue;
-                        }
-                    });
-
-                span.classList.remove('d-none');
-                select.classList.add('d-none');
-            });
-        }
-    });
-
-    // Search functionality
-    const searchInput = document.getElementById('searchInput');
-    searchInput.addEventListener('input', () => {
-        const searchValue = searchInput.value.toLowerCase();
-        Array.from(userTable.rows).forEach(row => {
-            const cells = Array.from(row.cells);
-            const matches = cells.some(cell => cell.textContent.toLowerCase().includes(searchValue));
-            row.style.display = matches ? '' : 'none';
+        // Ambil nilai dari input dan select di dalam row
+        row.querySelectorAll('input, select').forEach(input => {
+            textContent += ' ' + input.value.toLowerCase();
         });
-    });
+
+        row.style.display = textContent.includes(searchValue) ? '' : 'none';
+    }
+});
+
 </script>
