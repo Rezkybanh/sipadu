@@ -3,9 +3,6 @@
 require '../koneksi.php';
 
 try {
-    $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8mb4", $username, $password);
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
     // Query untuk menghitung jumlah laporan masuk per bulan
     $stmtMasuk = $pdo->prepare("SELECT MONTH(tanggal_pengaduan) AS bulan, COUNT(*) AS total FROM pengaduan GROUP BY bulan");
     $stmtMasuk->execute();
@@ -44,11 +41,14 @@ try {
         <div class="col-md-6 mb-4">
             <div class="card shadow">
                 <div class="card-body">
-                    <h5 class="card-title text-center">Total Laporan Masuk Per Bulan</h5>
+                    <h5 class="card-title text-center">Total Pengaduan Masuk</h5>
                     <canvas id="laporanMasukChart"></canvas>
                     <div class="text-center mt-3">
                         <a href="unduhLapMasuk.php" class="btn btn-primary btn-sm">
-                            Download Laporan
+                            Download Laporan 
+                        </a>
+                        <a href="unduhLapMasukBulanIni.php" class="btn btn-primary btn-sm">
+                            Download Laporan Bulan Ini
                         </a>
                     </div>
                 </div>
@@ -59,7 +59,7 @@ try {
         <div class="col-md-6 mb-4">
             <div class="card shadow">
                 <div class="card-body">
-                    <h5 class="card-title text-center">Total Laporan Diproses Per Bulan</h5>
+                    <h5 class="card-title text-center">Total Pengaduan Diproses</h5>
                     <canvas id="laporanDiprosesChart"></canvas>
                     <div class="text-center mt-3">
                         <a href="unduhLapProses.php" class="btn btn-primary btn-sm">
@@ -74,11 +74,14 @@ try {
         <div class="col-md-12 mb-4">
             <div class="card shadow">
                 <div class="card-body">
-                    <h5 class="card-title text-center">Total Pengaduan yang Telah Selesai</h5>
+                    <h5 class="card-title text-center">Total Pengaduan yang Telah Selesai Bulan Ini</h5>
                     <canvas id="pengaduanSelesaiChart"></canvas>
                     <div class="text-center mt-3">
                         <a href="unduhLapSelesai.php" class="btn btn-primary btn-sm">
                             Download Laporan
+                        </a>
+                        <a href="unduhLapSelesaiBulanIni.php" class="btn btn-primary btn-sm">
+                            Download Laporan Bulan Ini
                         </a>
                     </div>
                 </div>

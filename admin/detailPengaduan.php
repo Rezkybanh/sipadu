@@ -128,6 +128,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     .detail-item {
         margin-bottom: 15px;
+        display: block;
+        max-width: 100%;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+        white-space: normal;
     }
 
     .detail-item strong {
@@ -213,40 +218,40 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <?php endif; ?>
 
     <form method="POST">
-    <input type="hidden" name="id_pengaduan" value="<?= htmlspecialchars($id_pengaduan); ?>">
-    <?php if ($pengaduan['status'] === 'Baru') : ?>
-        <div class="detail-item">
-            <strong>Petugas:</strong>
-            <select name="id_petugas" class="form-select">
-                <option value="" selected disabled>Pilih Petugas</option>
-                <?php foreach ($petugasList as $petugas) : ?>
-                    <option value="<?= htmlspecialchars($petugas['id']); ?>">
-                        <?= htmlspecialchars($petugas['username']); ?>
-                    </option>
-                <?php endforeach; ?>
-            </select>
-        </div>
-    <?php elseif (!empty($nama_petugas)) : ?>
-        <div class="detail-item">
-            <strong>Petugas:</strong>
-            <span><?= htmlspecialchars($nama_petugas); ?></span>
-        </div>
-    <?php endif; ?>
-
-    <div class="form-actions">
+        <input type="hidden" name="id_pengaduan" value="<?= htmlspecialchars($id_pengaduan); ?>">
         <?php if ($pengaduan['status'] === 'Baru') : ?>
-            <button type="submit" name="action" value="submit" class="btn btn-success" id="submitBtn">Submit</button>
+            <div class="detail-item">
+                <strong>Petugas:</strong>
+                <select name="id_petugas" class="form-select">
+                    <option value="" selected disabled>Pilih Petugas</option>
+                    <?php foreach ($petugasList as $petugas) : ?>
+                        <option value="<?= htmlspecialchars($petugas['id']); ?>">
+                            <?= htmlspecialchars($petugas['username']); ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
+        <?php elseif (!empty($nama_petugas)) : ?>
+            <div class="detail-item">
+                <strong>Petugas:</strong>
+                <span><?= htmlspecialchars($nama_petugas); ?></span>
+            </div>
         <?php endif; ?>
-        <button type="submit" name="action" value="tolak" class="btn btn-danger">Tolak</button>
-    </div>
-</form>
+
+        <div class="form-actions">
+            <?php if ($pengaduan['status'] === 'Baru') : ?>
+                <button type="submit" name="action" value="submit" class="btn btn-success" id="submitBtn">Submit</button>
+            <?php endif; ?>
+            <button type="submit" name="action" value="tolak" class="btn btn-danger">Tolak</button>
+        </div>
+    </form>
 </div>
 
 <script>
     document.querySelector('#submitBtn').addEventListener('click', function(event) {
         // Cek apakah petugas sudah dipilih hanya untuk tombol submit
         const petugasSelect = document.querySelector('select[name="id_petugas"]');
-        
+
         if (!petugasSelect.value) {
             // Jika tidak ada yang dipilih, tampilkan peringatan SweetAlert dan hentikan pengiriman form
             event.preventDefault(); // Mencegah pengiriman form

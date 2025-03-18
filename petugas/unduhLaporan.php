@@ -1,12 +1,36 @@
 <?php
-require '../vendor/autoload.php'; // Pastikan composer autoload dipanggil
+require '../vendor/autoload.php';
 require '../koneksi.php';
-require_once '../middleware.php';
 
 use Dompdf\Dompdf;
 use Dompdf\Options;
 
-session_start();
+// Konfigurasi DomPDF
+$options = new Options();
+$options->set('defaultFont', 'Arial');
+$options->set('isRemoteEnabled', true);
+
+$dompdf = new Dompdf($options);
+
+// Konversi bulan ke bahasa Indonesia
+$bulan = [
+    'January' => 'Januari',
+    'February' => 'Februari',
+    'March' => 'Maret',
+    'April' => 'April',
+    'May' => 'Mei',
+    'June' => 'Juni',
+    'July' => 'Juli',
+    'August' => 'Agustus',
+    'September' => 'September',
+    'October' => 'Oktober',
+    'November' => 'November',
+    'December' => 'Desember'
+];
+
+$tanggalSekarang = date('d') . ' ' . $bulan[date('F')] . ' ' . date('Y');
+$bulanIni = strtoupper($bulan[date('F')]);
+$tahun = date('Y');
 
 // Pastikan user sudah login
 if (!isset($_SESSION['user_id'])) {
@@ -34,7 +58,7 @@ $stmtPetugas->execute();
 $petugas = $stmtPetugas->fetch(PDO::FETCH_ASSOC);
 
 // Ambil data pengaduan berdasarkan id_petugas
-$query = "SELECT id_pengaduan, judul, deskripsi, status, tanggal_pengaduan 
+$query = "SELECT id_pengaduan, judul, deskripsi, status, tanggal_pengaduan, tanggal_selesai
           FROM pengaduan 
           WHERE id_petugas = :id_user 
           ORDER BY tanggal_pengaduan DESC";
@@ -44,44 +68,89 @@ $stmt->bindParam(':id_user', $id_user, PDO::PARAM_INT);
 $stmt->execute();
 $pengaduan = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-// Siapkan HTML untuk PDF
-$html = '<h2 style="text-align: center;">Laporan Pengaduan</h2>';
+// Convert Gambar ke Base64
+$logoPath = '../assets/logoPnd.png';
+$logoData = file_exists($logoPath) ? base64_encode(file_get_contents($logoPath)) : "";
+$logoImg = $logoData ? '<img src="data:image/png;base64,' . $logoData . '" style="width:90px;">' : '';
 
-// Menampilkan Nama Petugas dan Tanggal Laporan
-$html .= "<p><strong>Petugas: </strong>{$petugas['username']}</p>";
-$html .= "<p><strong>Tanggal Laporan: </strong>" . date('d-m-Y') . "</p>";
-$html .= '<table border="1" width="100%" cellspacing="0" cellpadding="5">
-            <tr>
-                <th>ID Pengaduan</th>
-                <th>Judul</th>
-                <th>Deskripsi</th>
-                <th>Status</th>
-                <th>Tanggal Pengaduan</th>
-            </tr>';
+// HTML untuk PDF
+$html = '
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Laporan Pengaduan</title>
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; }
+        .kop-surat { text-align: center; margin-bottom: 10px; }
+        .judul-laporan { text-align: center; font-size: 16px; font-weight: bold; margin-top: 20px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th, td { border: 1px solid black; padding: 6px; text-align: center; font-size: 10px; }
+        th { background-color: #f2f2f2; }
+        .footer { margin-top: 20px; text-align: left; font-size: 12px; }
+        .footer2 { margin-top: 20px; text-align: right; font-size: 12px; }
+    </style>
+</head>
+<body>
+    <table style="border-collapse: collapse; border: none; width: 100%;">
+        <tr>
+            <td width="15%" align="center" style="border: none;">' . $logoImg . '</td>
+            <td align="center" style="border: none;">
+                <div style="font-size: 16px; font-weight: bold;">PEMERINTAH KABUPATEN PANGANDARAN</div>
+                <div style="font-size: 16px; font-weight: bold;">BADAN PENDAPATAN DAERAH</div>
+                <div style="font-size: 14px;">Jln. Kidang Pananjung No. 03 Pangandaran Kode Pos 46396</div>
+                <div style="font-size: 14px;">Email: <i>bapendakabupatenpangandaran@gmail.com</i></div>
+            </td>
+            <td width="15%" style="border: none;"></td>
+        </tr>
+    </table>
+    <hr>
+    <hr style="border: 1px solid black; margin-top: -5px;">
 
+    <div class="judul-laporan">LAPORAN PENGADUAN MASUK</div>
+
+    <table>
+        <tr>
+            <th>No.</th>
+            <th>Judul</th>
+            <th>Status</th>
+            <th>Tanggal Pengaduan</th>
+            <th>Tanggal Selesai</th>
+        </tr>';
+
+// Tambahkan data pengaduan ke tabel
+$no = 1;
 foreach ($pengaduan as $row) {
+    $tglPengaduan = date('d', strtotime($row['tanggal_pengaduan'])) . ' ' . $bulan[date('F', strtotime($row['tanggal_pengaduan']))] . ' ' . date('Y', strtotime($row['tanggal_pengaduan']));
+    $tglSelesai = date('d', strtotime($row['tanggal_selesai'])) . ' ' . $bulan[date('F', strtotime($row['tanggal_selesai']))] . ' ' . date('Y', strtotime($row['tanggal_selesai']));
     $html .= "<tr>
-                <td>{$row['id_pengaduan']}</td>
+                <td>{$no}</td>
                 <td>{$row['judul']}</td>
-                <td>{$row['deskripsi']}</td>
                 <td>{$row['status']}</td>
-                <td>{$row['tanggal_pengaduan']}</td>
+                <td>{$tglPengaduan}</td>
+                <td>{$tglSelesai}</td>
               </tr>";
+    $no++;
 }
-$html .= '</table>';
 
-// Konfigurasi DomPDF
-$options = new Options();
-$options->set('defaultFont', 'Arial');
+$html .= '</table>
+    <p class="footer">
+            Demikian laporan ini saya buat, semoga menjadi bahan pertimbangan selanjutnya. <br>
+        Atas perhatiannya, terima kasih.
+    </p>
+    <div class="footer2">
+        Pangandaran, ' . $tanggalSekarang . '<br><br><br><br>
+        <strong>' . htmlspecialchars($petugas['username']) . '</strong>
+    </div>
+</body>
+</html>';
 
-$dompdf = new Dompdf($options);
+// Load HTML ke DomPDF
 $dompdf->loadHtml($html);
-$dompdf->setPaper('A4', 'landscape');
+$dompdf->setPaper('A4', 'portrait');
 $dompdf->render();
 
-// Unduh file PDF
+// Output PDF
 ob_clean();
 $dompdf->stream("Laporan_Pengaduan.pdf", array("Attachment" => true));
-
 exit();
-?>

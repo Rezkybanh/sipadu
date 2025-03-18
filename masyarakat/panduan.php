@@ -45,7 +45,7 @@
         
     <div class="text-center mt-4">
         <a href="index.php?page=pengaduan" class="btn btn-primary btn-lg responsive-btn">Ajukan Pengaduan</a>
-        <a href="../pdf/FORMAT LAMPIRAN PENDUKUNG LAYANAN PENGADUAN WAJIB PAJAK.pdf" class="btn btn-secondary btn-lg ms-3 responsive-btn" download>Download Template Laporan</a>
+        <a href="../pdf/FORMAT LAMPIRAN PENDUKUNG.pdf" class="btn btn-secondary btn-lg ms-3 responsive-btn" download>Download Template Laporan</a>
     </div>
     </div>
 

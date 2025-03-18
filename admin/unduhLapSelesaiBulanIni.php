@@ -14,23 +14,41 @@ $dompdf = new Dompdf($options);
 
 // Konversi bulan ke bahasa Indonesia
 $bulan = [
-    'January' => 'Januari', 'February' => 'Februari', 'March' => 'Maret',
-    'April' => 'April', 'May' => 'Mei', 'June' => 'Juni', 'July' => 'Juli',
-    'August' => 'Agustus', 'September' => 'September', 'October' => 'Oktober',
-    'November' => 'November', 'December' => 'Desember'
+  'January' => 'Januari',
+  'February' => 'Februari',
+  'March' => 'Maret',
+  'April' => 'April',
+  'May' => 'Mei',
+  'June' => 'Juni',
+  'July' => 'Juli',
+  'August' => 'Agustus',
+  'September' => 'September',
+  'October' => 'Oktober',
+  'November' => 'November',
+  'December' => 'Desember'
 ];
 
 $tanggalSekarang = date('d') . ' ' . $bulan[date('F')] . ' ' . date('Y');
 $bulanIni = strtoupper($bulan[date('F')]);
 $tahun = date('Y');
 
-// Ambil data pengaduan
-$query = "SELECT p.id_pengaduan, p.judul, p.deskripsi, p.status, p.tanggal_pengaduan,
-                 u1.username AS pelapor, COALESCE(u2.username, 'Belum Ditugaskan') AS petugas
+$query = "SELECT 
+            p.id_pengaduan, 
+            p.judul, 
+            p.deskripsi, 
+            p.status, 
+            p.tanggal_pengaduan,
+            p.tanggal_selesai,
+            u1.username AS pelapor, 
+            COALESCE(u2.username, 'Belum Ditugaskan') AS petugas
           FROM pengaduan p
           JOIN user u1 ON p.id = u1.id
           LEFT JOIN user u2 ON p.id_petugas = u2.id
+          WHERE p.status = 'Selesai'
+          AND MONTH(p.tanggal_selesai) = MONTH(CURRENT_DATE)
+          AND YEAR(p.tanggal_selesai) = YEAR(CURRENT_DATE)
           ORDER BY p.tanggal_pengaduan DESC";
+
 
 $stmt = $pdo->prepare($query);
 $stmt->execute();
@@ -75,7 +93,7 @@ $html = '
     <hr>
     <hr style="border: 1px solid black; margin-top: -5px;">
 
-    <div class="judul-laporan">LAPORAN PENGADUAN MASUK</div>
+    <div class="judul-laporan">LAPORAN PENGADUAN SELESAI '  . $bulanIni . ' ' . $tahun . '</div>
 
     <table>
         <tr>
@@ -83,30 +101,31 @@ $html = '
             <th>Pelapor</th>
             <th>Petugas</th>
             <th>Judul</th>
-            <th>Deskripsi</th>
             <th>Status</th>
             <th>Tanggal Pengaduan</th>
+            <th>Tanggal Selesai</th>
         </tr>';
 
 // Tambahkan data pengaduan ke tabel
 $no = 1;
 foreach ($pengaduan as $row) {
-    $tglPengaduan = date('d', strtotime($row['tanggal_pengaduan'])) . ' ' . $bulan[date('F', strtotime($row['tanggal_pengaduan']))] . ' ' . date('Y', strtotime($row['tanggal_pengaduan']));
-    $html .= "<tr>
+  $tglPengaduan = date('d', strtotime($row['tanggal_pengaduan'])) . ' ' . $bulan[date('F', strtotime($row['tanggal_pengaduan']))] . ' ' . date('Y', strtotime($row['tanggal_pengaduan']));
+  $tglSelesai = date('d', strtotime($row['tanggal_selesa'])) . ' ' . $bulan[date('F', strtotime($row['tanggal_selesa']))] . ' ' . date('Y', strtotime($row['tanggal_selesa']));
+  $html .= "<tr>
                 <td>{$no}</td>
                 <td>{$row['pelapor']}</td>
                 <td>{$row['petugas']}</td>
                 <td>{$row['judul']}</td>
-                <td>{$row['deskripsi']}</td>
                 <td>{$row['status']}</td>
                 <td>{$tglPengaduan}</td>
+                <td>{$tglSelesai}</td>
               </tr>";
-              $no++;
+  $no++;
 }
 
 $html .= '</table>
     <p class="footer">
-          Demikian laporan ini saya buat, semoga menjadi bahan pertimbangan selanjutnya. <br>
+        Demikian laporan ini saya buat, semoga menjadi bahan pertimbangan selanjutnya. <br>
         Atas perhatiannya, terima kasih.
     </p>
     <div class="footer2">
